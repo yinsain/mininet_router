@@ -6,8 +6,8 @@
 INSTALL_PACKAGE_LIST='isc-dhcp-server hostapd iw wpasupplicant'
 LOCATION_IW="/sbin/iw"
 LOCATION_WPASUPPLICANT="/sbin/wpa_supplicant"
-LOCATION_HOSTAPD=""
-LOCATION_DHCP=""
+LOCATION_HOSTAPD="/usr/sbin/hostapd"
+LOCATION_DHCP="/usr/sbin/dhcpd"
 
 function check_hostapd() {
   ifile=`which hostapd`
