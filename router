@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# assumptions $( debian/ubuntu derived system + bash for shell )
+# if you are on Arch/Gentoo, i don't need to tell you what to change ;)
+
+INSTALL_PACKAGE_LIST='isc-dhcp-server hostapd iw wpasupplicant'
+LOCATION_IW="/sbin/iw"
+LOCATION_WPASUPPLICANT="/sbin/wpa_supplicant"
+LOCATION_HOSTAPD=""
+LOCATION_DHCP=""
+
+function check_hostapd() {
+  ifile=`which hostapd`
+  if [[ "/usr/bin/hostapd" -eq "$ifile" ]]; then
+    echo "[+] Hostapd installed !"
+  fi
+}
+
+function check_iw() {
+  ifile=`which hostapd`
+  if [[ "/sbin/iw" != "$ifile" ]]; then
+    echo "[!] iw not installed !"
+  fi
+}
+
+function check_wpa_supplicant() {
+  ifile=`which wpa_supplicant`
+  if [[ "/sbin/wpa_supplicant" != "$ifile" ]]; then
+    echo "[!] wpa_supplicant not installed !"
+  fi
+}
+
+function check_dhcp() {
+  ifile=`which isc-dhcp-server`
+  if [[ "/usr/bin/isc-dhcp-server" != "$ifile" ]]; then
+    echo "[!] isc-dhcp-server not installed !"
+  fi
+}
+
+function install() {
+  apt install $INSTALL_PACKAGE_LIST
+}
+
+if [[ "$1" -eq "install" ]]; then
+  install
+fi
+
+if [[ "$1" -eq "check" ]]; then
+  check_iw
+  check_wpa_supplicant
+  check_hostapd
+  check_dhcp
+  exit
+fi
