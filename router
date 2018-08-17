@@ -9,15 +9,28 @@ LOCATION_WPASUPPLICANT="/sbin/wpa_supplicant"
 LOCATION_HOSTAPD="/usr/sbin/hostapd"
 LOCATION_DHCP="/usr/sbin/dhcpd"
 
+WPASUPPLICANT_CONF=""
+WPASUPPLICANT_LOGS=""
+WPASUPPLICANT_CERT=""
+
+HOSTAPD_CONF=""
+HOSTAPD_LOGS=""
+HOSTAPD_CERT=""
+
+DHCP_CONF=""
+DHCP_LOGS=""
+
+## checking for all packages needed START
+
 function check_hostapd() {
   ifile=`which hostapd`
-  if [[ "/usr/bin/hostapd" -eq "$ifile" ]]; then
-    echo "[+] Hostapd installed !"
+  if [[ "/usr/bin/hostapd" != "$ifile" ]]; then
+    echo "[!] Hostapd not installed !"
   fi
 }
 
 function check_iw() {
-  ifile=`which hostapd`
+  ifile=`which iw`
   if [[ "/sbin/iw" != "$ifile" ]]; then
     echo "[!] iw not installed !"
   fi
@@ -31,24 +44,47 @@ function check_wpa_supplicant() {
 }
 
 function check_dhcp() {
-  ifile=`which isc-dhcp-server`
+  ifile=`which dhcpd`
   if [[ "/usr/bin/isc-dhcp-server" != "$ifile" ]]; then
     echo "[!] isc-dhcp-server not installed !"
   fi
 }
 
+## checking for all packages needed END
+
+## start and kill sequences for tools START
+
+function start_dhcpd {
+  systemctl start isc-dhcpd.service
+}
+
+function start_wpa_supp_auth {
+  wpa_supplicant -c $WPASUPPLICANT_CONFIG -D wired -i enp0s25 -f $WPASUPPLICANT_LOGS
+}
+
+function start_hostapd {
+
+}
+## start and kill sequences for tools END
+
 function install() {
   apt install $INSTALL_PACKAGE_LIST
 }
 
-if [[ "$1" -eq "install" ]]; then
+if [[ "$1" == "install" ]]; then
   install
 fi
 
-if [[ "$1" -eq "check" ]]; then
+if [[ "$1" == "check" ]]; then
   check_iw
   check_wpa_supplicant
   check_hostapd
   check_dhcp
   exit
+fi
+
+if [[ "$1" == "start" ]]; then
+  #start_dhcpd
+  #start_wpa_supp_auth
+  #start_hostapd
 fi
